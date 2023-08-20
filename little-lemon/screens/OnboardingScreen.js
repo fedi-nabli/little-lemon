@@ -62,7 +62,7 @@ const OnboardingScreen = ({ navigation }) => {
             newsletter: false,
           })
         )
-        // navigation.navigate('Home')
+        navigation.navigate('Home')
       }
     } catch (error) {
       console.error('Error saving user info:', error)
