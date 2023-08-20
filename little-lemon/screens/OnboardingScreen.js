@@ -40,7 +40,7 @@ const OnboardingScreen = ({ navigation }) => {
 
   const validateEmail = () => {
     if (!email) setEmailError('Email is required')
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    else if (validateEmail(email))
       setEmailError('Invalid email format')
     else setEmailError('')
   }
