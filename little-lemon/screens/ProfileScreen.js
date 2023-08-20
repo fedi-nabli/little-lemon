@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import {
   View,
   TextInput,
-  Button,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
@@ -16,6 +15,8 @@ import Footer from '../components/Footer'
 
 const ProfileScreen = ({ navigation }) => {
   const [name, setName] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [phoneNumberError, setPhoneNumberError] = useState('')
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
   const [orderStatus, setOrderStatus] = useState(false)
@@ -33,6 +34,7 @@ const ProfileScreen = ({ navigation }) => {
           const parsedUserInfo = JSON.parse(userInfo)
           setName(parsedUserInfo.name)
           setEmail(parsedUserInfo.email)
+          setPhoneNumber(parsedUserInfo.phoneNumber)
           setOrderStatus(parsedUserInfo.orderStatus === 'true')
           setPasswordChanges(parsedUserInfo.passwordChanges === 'true')
           setSpecialOffers(parsedUserInfo.specialOffers === 'true')
@@ -55,8 +57,17 @@ const ProfileScreen = ({ navigation }) => {
     }
   }
 
+  const validatePhoneNumber = () => {
+    const phoneRegex = /^\d{1,9}$/
+    if (!phoneNumber.match(phoneRegex)) {
+      setPhoneNumberError('Phone number must be numeric and up to 9 digits')
+    } else {
+      setPhoneNumberError('')
+    }
+  }
+
   const handleSave = async () => {
-    if (emailError) {
+    if (emailError || phoneNumberError) {
       return
     }
 
@@ -65,6 +76,7 @@ const ProfileScreen = ({ navigation }) => {
       await AsyncStorage.setItem('userInfo', JSON.stringify({
         name,
         email,
+        phoneNumber,
         orderStatus: orderStatus.toString(),
         passwordChanges: passwordChanges.toString(),
         specialOffers: specialOffers.toString(),
@@ -108,6 +120,16 @@ const ProfileScreen = ({ navigation }) => {
           onChangeText={text => setName(text)}
           style={styles.input}
         />
+        <Text style={styles.label}>Phone Number</Text>
+        <TextInput
+          placeholder='Phone Number'
+          value={phoneNumber}
+          onChangeText={text => setPhoneNumber(text)}
+          onBlur={validatePhoneNumber}
+          style={styles.input}
+          keyboardType='phone-pad'
+        />
+        {phoneNumberError ? <Text style={styles.error}>{phoneNumberError}</Text> : null}
         <Text style={styles.label}>Email</Text>
         <TextInput
           placeholder='Email'
